@@ -1,6 +1,6 @@
 from Tkinter import *
 
-demoModules = ['CheckBoxes','Items']#add new frame file name here
+demoModules = ['CheckBoxes','Items', 'cart']#add new frame file name here
 parts = []
 def addComponents(root):
     for demo in demoModules:
