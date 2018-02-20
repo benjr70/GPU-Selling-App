@@ -1,4 +1,5 @@
 from Tkinter import *
+from PIL import ImageTk, Image
 
 demoModules = [ 'Banner','CheckBoxes','Items', 'cart']#add new frame file name here
 parts = []

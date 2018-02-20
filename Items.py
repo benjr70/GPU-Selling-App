@@ -1,6 +1,6 @@
 from Tkinter import *
-
-
+from item_class import items
+from PIL import ImageTk, Image
 # ********************************* keep line 2-7 the same for every frame
 class Demo(Frame):
     def __init__(self, parent):
@@ -38,12 +38,25 @@ class Demo(Frame):
         canvas.bind('<Configure>', _configure_canvas)
 
         # Create a list of items
-        itemName = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'item 7']
+        item1 = items("GTX 1080 ti", 549.00, 11, 'Nivdia', '1080TI.jpg')
+        item2 = items("GTX 1070 ti", 449.00, 8, 'Nivdia', '1070.jpg')
+        itemName = [item1, item2]
+        r = 0
         for selectedItem in enumerate(itemName):
-            item = Label(interior, text=selectedItem[1])
-            item.pack(expand=YES, fill=BOTH, side=TOP)
-            item.config(relief=SUNKEN, width=40, height=7, bg='beige')
-
+            image = Image.open(selectedItem[1].get_pic())
+            photo = ImageTk.PhotoImage(image)
+            label = Label(interior,image=photo)
+            label.image = photo # keep a reference!
+            label.grid(column = 0, row = r)             
+            
+            itemname = Label(interior, text=selectedItem[1].get_name())
+            itemname.grid(column = 1, row = r, sticky = N)
+            itemname.config(relief=SUNKEN, height=1, bg='beige')
+            itemprice = Label(interior, text=selectedItem[1].get_price())
+            itemprice.grid(column = 2, row = r)
+            itemprice.config(relief=SUNKEN, height=1, bg='beige')
+            Button(interior, text = 'Add to cart').grid(column = 2, row = r, sticky = S)
+            r = r +1
         canvas.pack()
 
-# Demo().mainloop() don't enter mainloop here that will happen when the frames are attached
+#Demo().mainloop() #don't enter mainloop here that will happen when the frames are attached
