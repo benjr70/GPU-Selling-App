@@ -4,6 +4,8 @@ from PIL import ImageTk, Image
 
 
 # ********************************* keep line 2-7 the same for every frame
+subtotal = 0
+subtot = Label()
 class Demo(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
@@ -39,11 +41,18 @@ class Demo(Frame):
 
         canvas.bind('<Configure>', _configure_canvas)
         canvas.pack()
-
+        
         def addToCart(item, quantity):
-            item = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
-            item.pack(fill=X, side=TOP, anchor=N)
-            item.config(relief=SUNKEN, width=40, height=1, bg='beige')
+            itemp = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
+            itemp.pack(fill=X, side=TOP, anchor=N)
+            itemp.config(relief=SUNKEN, width=40, height=1, bg='beige')
+            global subtotal
+            global subtot
+            subtot.pack_forget()
+            subtotal = subtotal + item.get_price()*int(quantity)
+            subtot = Label(self, text = "subtotal: $" + str(subtotal))
+            subtot.config(relief = SUNKEN, width=40, height=1, bg='beige')
+            subtot.pack(side=BOTTOM, fill=X, anchor=N)  
 
         # Create a list of items
         item1 = items("GTX 1080 ti", 549.00, 11, 'Nvidia', '1080TI.jpg')
@@ -57,7 +66,7 @@ class Demo(Frame):
             image = Image.open(selectedItem[1].get_pic())
             photo = ImageTk.PhotoImage(image)
             label = Label(interior, image=photo)
-            label.image = photo  # keep a reference!
+            label.image = photo  
             label.grid(column=0, row=r)
 
             itemname = Label(interior, text=selectedItem[1].get_name())
@@ -88,4 +97,6 @@ class Demo(Frame):
         checkout = Button(self, text='Checkout')
         checkout.config(background='green', font=labelFont)
         checkout.pack(side=BOTTOM, fill=X, anchor=N)
+
+
 # Demo().mainloop() #don't enter mainloop here that will happen when the frames are attached
