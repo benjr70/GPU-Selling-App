@@ -8,7 +8,6 @@ class Demo(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.pack()
-
         # ***************************************** put code below this like so
 
         # create a canvas object and a vertical scrollbar for scrolling it
@@ -40,10 +39,18 @@ class Demo(Frame):
         canvas.bind('<Configure>', _configure_canvas)
         canvas.pack()
 
-        def addToCart(item, quantity):
-            item = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
-            item.pack(fill=X, side=TOP, anchor=N)
-            item.config(relief=SUNKEN, width=40, height=1, bg='beige')
+        priceAdder = IntVar()
+        priceAdder.set(0)
+        totalPrice = StringVar()
+        totalPrice.set("subtotal: $" + str(priceAdder.get()))
+
+        def addToCart(item, quantity, currentTotal):
+            priceAdder.set(currentTotal)
+            labelItem = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
+            labelItem.pack(fill=X, side=TOP, anchor=N)
+            labelItem.config(relief=SUNKEN, width=40, height=1, bg='beige')
+            priceAdder.set(priceAdder.get() + (int(item.get_price()) * int(quantity)))
+            totalPrice.set("subtotal: $" + str(priceAdder.get()))
 
         # Create a list of items
         item1 = items("GTX 1080 ti", 549.00, 11, 'Nvidia', '1080TI.jpg')
@@ -51,8 +58,10 @@ class Demo(Frame):
         item3 = items("Radeon RX 480", 733.00, 8, 'AMD', 'Radeon480.jpg')
         item4 = items("AMD FirePro", 229.00, 4, 'AMD', 'FirePro.jpg')
         itemName = [item1, item2, item3, item4]
+
         r = 0
         options = []
+
         for selectedItem in enumerate(itemName):
             image = Image.open(selectedItem[1].get_pic())
             photo = ImageTk.PhotoImage(image)
@@ -75,7 +84,10 @@ class Demo(Frame):
             drop.config(height=1, borderwidth=1)
 
             Button(interior, borderwidth=1, text='Add to cart',
-                command=lambda j=r: addToCart(itemName[j], options[j].get())).grid(column=3, row=r, sticky=S, pady=3, padx=10)
+                   command=lambda j=r: addToCart(itemName[j], options[j].get(), priceAdder.get())).grid(column=3, row=r,
+                                                                                                        sticky=S,
+                                                                                                        pady=3,
+                                                                                                        padx=10)
 
             r = r + 1
 
@@ -88,4 +100,11 @@ class Demo(Frame):
         checkout = Button(self, text='Checkout')
         checkout.config(background='green', font=labelFont)
         checkout.pack(side=BOTTOM, fill=X, anchor=N)
+
+        subTotalFont = ('verdana', 12, 'bold')
+        subTotal = Label(self, textvariable=totalPrice)
+        subTotal.config(font=subTotalFont)
+        subTotal.pack(side=BOTTOM, fill=X, anchor=N)
+        cart.config(font=labelFont)
+
 # Demo().mainloop() #don't enter mainloop here that will happen when the frames are attached
