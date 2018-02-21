@@ -38,9 +38,10 @@ class Demo(Frame):
                 canvas.itemconfigure(interior_id, width=canvas.winfo_width())
 
         canvas.bind('<Configure>', _configure_canvas)
+        canvas.pack()
 
-        def addToCart(item):
-            item = Label(self, text=item.get_name())
+        def addToCart(item, quantity):
+            item = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
             item.pack(fill=X, side=TOP, anchor=N)
             item.config(relief=SUNKEN, width=40, height=1, bg='beige')
 
@@ -51,6 +52,7 @@ class Demo(Frame):
         item4 = items("AMD FirePro", 229.00, 4, 'AMD', 'FirePro.jpg')
         itemName = [item1, item2, item3, item4]
         r = 0
+        options = []
         for selectedItem in enumerate(itemName):
             image = Image.open(selectedItem[1].get_pic())
             photo = ImageTk.PhotoImage(image)
@@ -59,14 +61,23 @@ class Demo(Frame):
             label.grid(column=0, row=r)
 
             itemname = Label(interior, text=selectedItem[1].get_name())
-            itemname.grid(column=1, row=r, sticky=N)
+            itemname.grid(column=2, row=r, sticky=N)
             itemname.config(relief=SUNKEN, height=1, bg='beige')
             itemprice = Label(interior, text=selectedItem[1].get_price())
-            itemprice.grid(column=2, row=r)
+            itemprice.grid(column=3, row=r)
             itemprice.config(relief=SUNKEN, height=1, bg='beige')
-            Button(interior, text='Add to cart', command=lambda j=r: addToCart(itemName[j])).grid(column=2, row=r, sticky=S)
+
+            var = StringVar()
+            var.set(1)
+            options.append(var)
+            drop = OptionMenu(interior, var, '1', '2', '3')
+            drop.grid(column=2, row=r, sticky=S)
+            drop.config(height=1, borderwidth=1)
+
+            Button(interior, borderwidth=1, text='Add to cart',
+                command=lambda j=r: addToCart(itemName[j], options[j].get())).grid(column=3, row=r, sticky=S, pady=3, padx=10)
+
             r = r + 1
-        canvas.pack()
 
         cart = Label(self, text='Cart')
         cart.pack(fill=BOTH, side=TOP)
