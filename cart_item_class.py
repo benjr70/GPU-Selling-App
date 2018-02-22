@@ -2,12 +2,18 @@ from Tkinter import *
 from item_class import items
 
 class cartItem:
+    cartList = []
     def __init__(self,Label, button, itemclass, quantity):
+        cartItem.cartList.append(self)
         self.set_label(Label)
         self.set_button(button)
         self.set_itemclass(itemclass)
         self.set_quantity(quantity)
+        
+    def __call__(self,Label, button, itemclass, quantity):
+        cartItem.cartList.append(cartItem(Label, button, itemclass, quantity))
 
+    
     def set_label(self, label):
         self.__label = label
             

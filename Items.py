@@ -11,7 +11,7 @@ itemL = Label()
 remove = Button()
 Verdana14 = ('verdana', 14, 'bold')
 Verdana10 = ('verdana', 10, 'bold')
-cartitems = []
+
 
 
 class Demo(Frame):
@@ -57,15 +57,42 @@ class Demo(Frame):
             global subtot
             global itemL
             global remove
-            global cartitems
-            itemL = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
-            itemL.pack(fill=X, side=TOP, anchor=N)
-            itemL.config(relief=SUNKEN, width=40, height=1, bg='beige')
+            global cartItem
+            flag = True
+            for cartItem in cartItem.cartList:
+                tempitem = cartItem.get_itemclass()
+                print tempitem.get_name()
+                if(item.get_name() == tempitem.get_name()):
+                    flag = False
+                    print 'in flag = false item'
+                    itemL = cartItem.get_label()
+                    remove = cartItem.get_button()
+                    itemL.pack_forget()
+                    remove.pack_forget()
+                    newQuantity = int(quantity) + int(cartItem.get_quantity())
+                    itemL = Label(self, text=item.get_name() + "   ( Quantity: " + str(newQuantity) + " )")
+                    itemL.pack(fill=X, side=TOP, anchor=N)
+                    itemL.config(relief=SUNKEN, width=40, height=1, bg='beige')
+                    remove = Button(self, text= "Remove " + item.get_name(), command = lambda j=r:removeCart(item.get_name()))
+                    remove.pack(side=TOP, anchor=E)
+                    cartItem.set_quantity(newQuantity)
+                    cartItem.set_label(itemL)
+                    cartItem.set_button(remove)
+                    break
+                else:
+                    flag = True
+                    print 'in else true'
+                    
+            if(flag == True):
+                print 'in if(flag == true)'
+                itemL = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
+                itemL.pack(fill=X, side=TOP, anchor=N)
+                itemL.config(relief=SUNKEN, width=40, height=1, bg='beige')
             
-            remove = Button(self, text= "Remove " + item.get_name(), command = lambda j=r:removeCart(item.get_name()))
-            remove.pack(side=TOP, anchor=E)
+                remove = Button(self, text= "Remove " + item.get_name(), command = lambda j=r:removeCart(item.get_name()))
+                remove.pack(side=TOP, anchor=E)
             
-            cartitems.append(cartItem(itemL, remove, item, quantity))
+                cartItem(itemL, remove, item, quantity)
             
             subtot.pack_forget()
             subtotal = subtotal + item.get_price() * int(quantity)
@@ -73,20 +100,30 @@ class Demo(Frame):
             subtot = Label(self, text="subtotal: $" + str(subtotal))
             subtot.config(relief=SUNKEN, width=40, height=1, bg='beige')
             subtot.pack(side=BOTTOM, fill=X, anchor=N)
-
         def displayCheckOut():
             myDialog = CheckOutDialog()
             myDialog.wait_window(myDialog.top)
             
         def removeCart(itemname):
+            print 'int removeCart'
             global itemL
             global remove
-            global cartitems            
-            for cartItem in cartitems:
+            global cartItem
+            global subtotal
+            global subtot
+            for cartItem in cartItem.cartList:
                 tempitem = cartItem.get_itemclass()
                 if(itemname == tempitem.get_name()):
                     itemL = cartItem.get_label()
                     remove = cartItem.get_button()
+                    subtotal = subtotal - tempitem.get_price() * float(cartItem.get_quantity())
+                    cartItem.set_quantity(0)
+                    subtot.pack_forget()                    
+                    subtot = Label(self, text="subtotal: $" + str(subtotal))
+                    subtot.config(relief=SUNKEN, width=40, height=1, bg='beige')
+                    subtot.pack(side=BOTTOM, fill=X, anchor=N)
+                    
+                    
             itemL.pack_forget()
             remove.pack_forget()
 
