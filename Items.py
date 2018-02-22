@@ -1,12 +1,19 @@
 from Tkinter import *
 from item_class import items
 from PIL import ImageTk, Image
-
+import tkSimpleDialog
 
 # ********************************* keep line 2-7 the same for every frame
 subtotal = 0
 subtot = Label()
+Verdana14 = ('verdana', 14, 'bold')
+Verdana10 = ('verdana', 10, 'bold')
+
+
+
 class Demo(Frame):
+
+
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.pack()
@@ -41,7 +48,7 @@ class Demo(Frame):
 
         canvas.bind('<Configure>', _configure_canvas)
         canvas.pack()
-        
+
         def addToCart(item, quantity):
             itemp = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
             itemp.pack(fill=X, side=TOP, anchor=N)
@@ -49,10 +56,15 @@ class Demo(Frame):
             global subtotal
             global subtot
             subtot.pack_forget()
-            subtotal = subtotal + item.get_price()*int(quantity)
-            subtot = Label(self, text = "subtotal: $" + str(subtotal))
-            subtot.config(relief = SUNKEN, width=40, height=1, bg='beige')
-            subtot.pack(side=BOTTOM, fill=X, anchor=N)  
+            subtotal = subtotal + item.get_price() * int(quantity)
+            subtot = Label(self, text="subtotal: $" + str(subtotal))
+            subtot.config(relief=SUNKEN, width=40, height=1, bg='beige')
+            subtot.pack(side=BOTTOM, fill=X, anchor=N)
+
+        def displayCheckOut():
+            myDialog = CheckOutDialog()
+            myDialog.wait_window(myDialog.top)
+
 
         # Create a list of items
         item1 = items("GTX 1080 ti", 549.00, 11, 'Nvidia', '1080TI.jpg')
@@ -66,7 +78,7 @@ class Demo(Frame):
             image = Image.open(selectedItem[1].get_pic())
             photo = ImageTk.PhotoImage(image)
             label = Label(interior, image=photo)
-            label.image = photo  
+            label.image = photo
             label.grid(column=0, row=r)
 
             itemname = Label(interior, text=selectedItem[1].get_name())
@@ -84,7 +96,8 @@ class Demo(Frame):
             drop.config(height=1, borderwidth=1)
 
             Button(interior, borderwidth=1, text='Add to cart',
-                command=lambda j=r: addToCart(itemName[j], options[j].get())).grid(column=3, row=r, sticky=S, pady=3, padx=10)
+                   command=lambda j=r: addToCart(itemName[j], options[j].get())).grid(column=3, row=r, sticky=S, pady=3,
+                                                                                      padx=10)
 
             r = r + 1
 
@@ -94,9 +107,98 @@ class Demo(Frame):
         labelFont = ('verdana', 20, 'bold')
         cart.config(font=labelFont)
 
-        checkout = Button(self, text='Checkout')
+        checkout = Button(self, text='Checkout', command=displayCheckOut)
         checkout.config(background='green', font=labelFont)
         checkout.pack(side=BOTTOM, fill=X, anchor=N)
+
+
+
+
+class CheckOutDialog(Tk):
+    def __init__(self):
+        Tk.__init__(self)
+        shippingFields = 'Full name', 'Address', 'Zip', 'City', 'State', 'Phone number'
+        paymentFields = 'Card number', 'EXP', 'Security code', 'Name on card'
+        delivery = 5.99
+        tax = subtotal * 0.075
+        total = subtotal + tax + delivery
+        entries = []
+
+        header = Frame(self)
+        header.pack(side=TOP, fill=X)
+        headerLabel = Label(header, pady=10, text="1. Shipping Address")
+        headerLabel.pack(side=TOP, anchor='n')
+        headerLabel.config(font=Verdana14)
+        for field in shippingFields:
+            row = Frame(self)
+            row.pack(side=TOP, fill=X)
+            label = Label(row, width=15, pady=5, text=field, justify=LEFT)
+            label.pack(side=LEFT)
+            ent = Entry(row)
+            ent.pack(side=LEFT, expand=NO)
+            ent.config(width=30)
+            entries.append(ent)
+
+        header = Frame(self)
+        header.pack(side=TOP, fill=X)
+        headerLabel = Label(header, pady=10, text="2. Payment")
+        headerLabel.pack(side=TOP, anchor='n')
+        headerLabel.config(font=Verdana14)
+        for field in paymentFields:
+            row = Frame(self)
+            row.pack(side=TOP, fill=X)
+            label = Label(row, width=15, pady=5, text=field, justify=LEFT)
+            label.pack(side=LEFT)
+            ent = Entry(row)
+            ent.pack(side=LEFT, expand=NO)
+            ent.config(width=30)
+            entries.append(ent)
+        mainButton = Button(self, text='Continue', command=self.on_click)
+        mainButton.pack()
+
+        top = self.top = Toplevel(self)
+        header = Frame(top)
+        header.pack(side=TOP, fill=X)
+        headerLabel = Label(header, pady=10, text="3. Review")
+        headerLabel.pack(side=TOP, anchor='n')
+        headerLabel.config(font=Verdana14)
+
+        subtotalLabel = Label(top, text="subtotal: $" + str("%.2f" % subtotal))
+        subtotalLabel.pack(side=TOP, anchor='ne')
+        subtotalLabel.config(font=Verdana10)
+        deliveryLabel = Label(top, text="delivery: $" + str("%.2f" % delivery))
+        deliveryLabel.pack(side=TOP, anchor='ne')
+        deliveryLabel.config(font=Verdana10)
+        taxLabel = Label(top, text="tax: $" + str("%.2f" % tax))
+        taxLabel.pack(side=TOP, anchor='ne')
+        taxLabel.config(font=Verdana10)
+        totalLabel = Label(top, text="total: $" + str("%.2f" % total))
+        totalLabel.pack(side=TOP, anchor='ne')
+        totalLabel.config(font=Verdana10)
+        mainButton = Button(top, text='Place Order', command=self.last_click)
+        mainButton.pack()
+
+        top.withdraw()
+
+        reviewTop = self.reviewTop = Toplevel(self)
+
+
+
+        reviewTop.withdraw()
+
+    def send(self):
+        self.top.withdraw()
+
+    def on_click(self):
+        self.top.deiconify()
+
+    def destroyRest(self):
+        self.top.destroy()
+
+    def last_click(self):
+        self.top.destroy()
+
+
 
 
 # Demo().mainloop() #don't enter mainloop here that will happen when the frames are attached
