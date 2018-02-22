@@ -1,6 +1,7 @@
 from Tkinter import *
 from item_class import items
 from PIL import ImageTk, Image
+from tkMessageBox import *
 import tkSimpleDialog
 from cart_item_class import cartItem
 
@@ -9,13 +10,12 @@ subtotal = 0
 subtot = Label()
 itemL = Label()
 remove = Button()
-Verdana14 = ('verdana', 14, 'bold')
-Verdana10 = ('verdana', 10, 'bold')
-
+Verdana14B = ('verdana', 14, 'bold')
+Verdana10B = ('verdana', 10, 'bold')
+Verdana10 = ('verdana', 10)
 
 
 class Demo(Frame):
-
 
     def __init__(self, parent):
         Frame.__init__(self, parent)
@@ -62,7 +62,7 @@ class Demo(Frame):
             for cartItem in cartItem.cartList:
                 tempitem = cartItem.get_itemclass()
                 print tempitem.get_name()
-                if(item.get_name() == tempitem.get_name()):
+                if (item.get_name() == tempitem.get_name()):
                     flag = False
                     print 'in flag = false item'
                     itemL = cartItem.get_label()
@@ -73,7 +73,8 @@ class Demo(Frame):
                     itemL = Label(self, text=item.get_name() + "   ( Quantity: " + str(newQuantity) + " )")
                     itemL.pack(fill=X, side=TOP, anchor=N)
                     itemL.config(relief=SUNKEN, width=40, height=1, bg='beige')
-                    remove = Button(self, text= "Remove " + item.get_name(), command = lambda j=r:removeCart(item.get_name()))
+                    remove = Button(self, text="Remove " + item.get_name(),
+                                    command=lambda j=r: removeCart(item.get_name()))
                     remove.pack(side=TOP, anchor=E)
                     cartItem.set_quantity(newQuantity)
                     cartItem.set_label(itemL)
@@ -82,28 +83,29 @@ class Demo(Frame):
                 else:
                     flag = True
                     print 'in else true'
-                    
-            if(flag == True):
+
+            if (flag == True):
                 print 'in if(flag == true)'
                 itemL = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
                 itemL.pack(fill=X, side=TOP, anchor=N)
                 itemL.config(relief=SUNKEN, width=40, height=1, bg='beige')
-            
-                remove = Button(self, text= "Remove " + item.get_name(), command = lambda j=r:removeCart(item.get_name()))
+
+                remove = Button(self, text="Remove " + item.get_name(), command=lambda j=r: removeCart(item.get_name()))
                 remove.pack(side=TOP, anchor=E)
-            
+
                 cartItem(itemL, remove, item, quantity)
-            
+
             subtot.pack_forget()
             subtotal = subtotal + item.get_price() * int(quantity)
-            
+
             subtot = Label(self, text="subtotal: $" + str(subtotal))
             subtot.config(relief=SUNKEN, width=40, height=1, bg='beige')
             subtot.pack(side=BOTTOM, fill=X, anchor=N)
+
         def displayCheckOut():
-            myDialog = CheckOutDialog()
+            myDialog = CheckOutDialog(cartItem.cartList)
             myDialog.wait_window(myDialog.top)
-            
+
         def removeCart(itemname):
             print 'int removeCart'
             global itemL
@@ -113,17 +115,16 @@ class Demo(Frame):
             global subtot
             for cartItem in cartItem.cartList:
                 tempitem = cartItem.get_itemclass()
-                if(itemname == tempitem.get_name()):
+                if (itemname == tempitem.get_name()):
                     itemL = cartItem.get_label()
                     remove = cartItem.get_button()
                     subtotal = subtotal - tempitem.get_price() * float(cartItem.get_quantity())
                     cartItem.set_quantity(0)
-                    subtot.pack_forget()                    
+                    subtot.pack_forget()
                     subtot = Label(self, text="subtotal: $" + str(subtotal))
                     subtot.config(relief=SUNKEN, width=40, height=1, bg='beige')
                     subtot.pack(side=BOTTOM, fill=X, anchor=N)
-                    
-                    
+
             itemL.pack_forget()
             remove.pack_forget()
 
@@ -173,23 +174,24 @@ class Demo(Frame):
         checkout.pack(side=BOTTOM, fill=X, anchor=N)
 
 
-
-
 class CheckOutDialog(Tk):
-    def __init__(self):
+
+    def __init__(self, cartList):
         Tk.__init__(self)
         shippingFields = 'Full name', 'Address', 'Zip', 'City', 'State', 'Phone number'
         paymentFields = 'Card number', 'EXP', 'Security code', 'Name on card'
         delivery = 5.99
         tax = subtotal * 0.075
         total = subtotal + tax + delivery
-        entries = []
+
+        shippingEntries = []
+        paymentEntries = []
 
         header = Frame(self)
         header.pack(side=TOP, fill=X)
         headerLabel = Label(header, pady=10, text="1. Shipping Address")
         headerLabel.pack(side=TOP, anchor='n')
-        headerLabel.config(font=Verdana14)
+        headerLabel.config(font=Verdana14B)
         for field in shippingFields:
             row = Frame(self)
             row.pack(side=TOP, fill=X)
@@ -198,13 +200,13 @@ class CheckOutDialog(Tk):
             ent = Entry(row)
             ent.pack(side=LEFT, expand=NO)
             ent.config(width=30)
-            entries.append(ent)
+            shippingEntries.append(ent)
 
         header = Frame(self)
         header.pack(side=TOP, fill=X)
         headerLabel = Label(header, pady=10, text="2. Payment")
         headerLabel.pack(side=TOP, anchor='n')
-        headerLabel.config(font=Verdana14)
+        headerLabel.config(font=Verdana14B)
         for field in paymentFields:
             row = Frame(self)
             row.pack(side=TOP, fill=X)
@@ -213,16 +215,58 @@ class CheckOutDialog(Tk):
             ent = Entry(row)
             ent.pack(side=LEFT, expand=NO)
             ent.config(width=30)
-            entries.append(ent)
-        mainButton = Button(self, text='Continue', command=self.on_click)
+            paymentEntries.append(ent)
+        mainButton = Button(self, text='Review', command=lambda: self.on_click(shippingEntries, paymentEntries))
         mainButton.pack()
 
         top = self.top = Toplevel(self)
+
         header = Frame(top)
         header.pack(side=TOP, fill=X)
+
         headerLabel = Label(header, pady=10, text="3. Review")
         headerLabel.pack(side=TOP, anchor='n')
-        headerLabel.config(font=Verdana14)
+        headerLabel.config(font=Verdana14B)
+
+        paymentHeader = Frame(top)
+        paymentHeader.pack(side=TOP, fill=X)
+
+        headerLabel = Label(paymentHeader, pady=10, text="Payment Summary")
+        headerLabel.pack(side=TOP, anchor='w')
+        headerLabel.config(font=Verdana10B)
+
+        paymentSecondHeader = Frame(top)
+        paymentSecondHeader.pack(side=TOP, fill=X)
+
+        headerLabel = Label(paymentSecondHeader, pady=10, text="Item")
+        headerLabel.grid(column=0, row=1, padx=35)
+        headerLabel.config(font=Verdana10)
+        headerLabel = Label(paymentSecondHeader, pady=10, text="Quantity")
+        headerLabel.grid(column=1, row=1, padx=35)
+        headerLabel.config(font=Verdana10)
+        headerLabel = Label(paymentSecondHeader, pady=10, text="Unit Price")
+        headerLabel.grid(column=2, row=1, padx=25)
+        headerLabel.config(font=Verdana10)
+
+        for cartItem in cartList:
+            body = Frame(top)
+            body.pack(side=TOP, fill=X)
+            body.config(bg="light grey")
+
+            tempitem = cartItem.get_itemclass()
+
+            if (cartItem.get_quantity() > 0):
+                headerLabel = Label(body, pady=10, text=tempitem.get_name())
+                headerLabel.grid(column=0, row=1, padx=35)
+                headerLabel.config(font=Verdana10, bg="light grey")
+
+                headerLabel = Label(body, pady=10, text=cartItem.get_quantity())
+                headerLabel.grid(column=1, row=1, padx=35)
+                headerLabel.config(font=Verdana10, bg="light grey")
+
+                headerLabel = Label(body, pady=10, text=tempitem.get_price())
+                headerLabel.grid(column=2, row=1, padx=50, sticky=E)
+                headerLabel.config(font=Verdana10, bg="light grey")
 
         subtotalLabel = Label(top, text="subtotal: $" + str("%.2f" % subtotal))
         subtotalLabel.pack(side=TOP, anchor='ne')
@@ -243,19 +287,23 @@ class CheckOutDialog(Tk):
 
         reviewTop = self.reviewTop = Toplevel(self)
 
-
-
         reviewTop.withdraw()
 
     def send(self):
         self.top.withdraw()
 
-    def on_click(self):
+    def on_click(self, shippingEntries, paymentEntries):
+        for i in shippingEntries:
+            if len(i.get()) == 0:
+                showerror('error', 'Please make sure all shipping address fields are filled!')
+                return
+        for i in paymentEntries:
+            if len(i.get()) == 0:
+                showerror('error', 'Please make sure all payment fields are filled!')
+                return
         self.top.deiconify()
+
     def last_click(self):
         self.top.destroy()
-
-
-
 
 # Demo().mainloop() #don't enter mainloop here that will happen when the frames are attached
