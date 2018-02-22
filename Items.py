@@ -2,13 +2,16 @@ from Tkinter import *
 from item_class import items
 from PIL import ImageTk, Image
 import tkSimpleDialog
+from cart_item_class import cartItem
 
 # ********************************* keep line 2-7 the same for every frame
 subtotal = 0
 subtot = Label()
+itemL = Label()
+remove = Button()
 Verdana14 = ('verdana', 14, 'bold')
 Verdana10 = ('verdana', 10, 'bold')
-
+cartitems = []
 
 
 class Demo(Frame):
@@ -50,13 +53,23 @@ class Demo(Frame):
         canvas.pack()
 
         def addToCart(item, quantity):
-            itemp = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
-            itemp.pack(fill=X, side=TOP, anchor=N)
-            itemp.config(relief=SUNKEN, width=40, height=1, bg='beige')
             global subtotal
             global subtot
+            global itemL
+            global remove
+            global cartitems
+            itemL = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
+            itemL.pack(fill=X, side=TOP, anchor=N)
+            itemL.config(relief=SUNKEN, width=40, height=1, bg='beige')
+            
+            remove = Button(self, text= "Remove " + item.get_name(), command = lambda j=r:removeCart(item.get_name()))
+            remove.pack(side=TOP, anchor=E)
+            
+            cartitems.append(cartItem(itemL, remove, item, quantity))
+            
             subtot.pack_forget()
             subtotal = subtotal + item.get_price() * int(quantity)
+            
             subtot = Label(self, text="subtotal: $" + str(subtotal))
             subtot.config(relief=SUNKEN, width=40, height=1, bg='beige')
             subtot.pack(side=BOTTOM, fill=X, anchor=N)
@@ -64,7 +77,18 @@ class Demo(Frame):
         def displayCheckOut():
             myDialog = CheckOutDialog()
             myDialog.wait_window(myDialog.top)
-
+            
+        def removeCart(itemname):
+            global itemL
+            global remove
+            global cartitems            
+            for cartItem in cartitems:
+                tempitem = cartItem.get_itemclass()
+                if(itemname == tempitem.get_name()):
+                    itemL = cartItem.get_label()
+                    remove = cartItem.get_button()
+            itemL.pack_forget()
+            remove.pack_forget()
 
         # Create a list of items
         item1 = items("GTX 1080 ti", 549.00, 11, 'Nvidia', '1080TI.jpg')
