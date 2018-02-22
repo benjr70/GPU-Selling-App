@@ -252,10 +252,6 @@ class CheckOutDialog(Tk):
 
     def on_click(self):
         self.top.deiconify()
-
-    def destroyRest(self):
-        self.top.destroy()
-
     def last_click(self):
         self.top.destroy()
 
