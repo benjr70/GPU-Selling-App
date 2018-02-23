@@ -12,25 +12,22 @@ class Demo(Frame):
                               'Assignment: Assignment 1')
 
         def displayHelp():
-            showinfo('Help',  '1. Browse through the selection of GPU\'s!\n\n'+
+            showinfo('Help',  '1. Browse through the selection of GPU\'s\n\n'+
                               '2. Add items to the cart \n\n' +
                               '3. Press the checkout button to proceed to next step.\n\n' +
-                              '4. Enter your shipping and payment information hit review\n\n'+
+                              '4. Enter your shipping and payment information press review\n\n'+
                               '5. Review all your information and press "place order"')
 
 
-        def makeMenu():
-            menubar = Frame(parent)
-            menubar.pack(side=TOP, fill=X)
+        menubar = Frame(parent)
+        menubar.pack(side=TOP, fill=X)
 
-            btnFile = Menubutton(menubar, text='File', underline=0)
-            btnFile.pack(side=LEFT)
-            file = Menu(btnFile)
-            file.add_command(label='Help', command=displayHelp, underline=0)
-            file.add_command(label='About', command=displayAbout, underline=0)
-            btnFile.config(menu=file)
-
-        makeMenu()
+        btnFile = Menubutton(menubar, text='File', underline=0)
+        btnFile.pack(side=LEFT)
+        file = Menu(btnFile)
+        file.add_command(label='Help', command=displayHelp, underline=0)
+        file.add_command(label='About', command=displayAbout, underline=0)
+        btnFile.config(menu=file)
 
         headerFrame = Frame(parent)
         headerFrame.pack(side=TOP, fill=X)
