@@ -248,31 +248,25 @@ class CheckOutDialog(Tk):
         headerLabel.grid(column=2, row=1, padx=25)
         headerLabel.config(font=Verdana10)
 
-        usedNames= []
         for cartItem in cartList:
             body = Frame(top)
             body.pack(side=TOP, fill=X)
             body.config(bg="light grey")
-            used = FALSE
+
             tempitem = cartItem.get_itemclass()
 
-            for each in usedNames:
-                if tempitem.get_name() == each:
-                    used = TRUE
-
-            if cartItem.get_quantity() > 0 and used == FALSE:
+            if (cartItem.get_quantity() > 0):
                 headerLabel = Label(body, pady=10, text=tempitem.get_name())
-                headerLabel.grid(column=0, row=1, padx=(50 - len(tempitem.get_name())))
+                headerLabel.grid(column=0, row=1, padx=35)
                 headerLabel.config(font=Verdana10, bg="light grey")
 
                 headerLabel = Label(body, pady=10, text=cartItem.get_quantity())
-                headerLabel.grid(column=1, row=1, padx=(35 - len(str(cartItem.get_quantity()))))
+                headerLabel.grid(column=1, row=1, padx=35)
                 headerLabel.config(font=Verdana10, bg="light grey")
 
                 headerLabel = Label(body, pady=10, text=tempitem.get_price())
-                headerLabel.grid(column=2, row=1, padx=(35 - len(str(tempitem.get_price()))))
+                headerLabel.grid(column=2, row=1, padx=50, sticky=E)
                 headerLabel.config(font=Verdana10, bg="light grey")
-                usedNames.append(tempitem.get_name())
 
         subTotalFrame = Frame(top)
         subTotalFrame.pack(side=TOP, fill=X)
@@ -306,14 +300,14 @@ class CheckOutDialog(Tk):
         self.top.withdraw()
 
     def on_click(self, shippingEntries, paymentEntries):
-    #     for i in shippingEntries:
-    #         if len(i.get()) == 0:
-    #             showerror('error', 'Please make sure all shipping address fields are filled!')
-    #             return
-    #     for i in paymentEntries:
-    #         if len(i.get()) == 0:
-    #             showerror('error', 'Please make sure all payment fields are filled!')
-    #             return
+        for i in shippingEntries:
+            if len(i.get()) == 0:
+                showerror('error', 'Please make sure all shipping address fields are filled!')
+                return
+        for i in paymentEntries:
+            if len(i.get()) == 0:
+                showerror('error', 'Please make sure all payment fields are filled!')
+                return
         self.top.deiconify()
 
     def last_click(self):
