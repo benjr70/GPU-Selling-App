@@ -233,7 +233,7 @@ class CheckOutDialog(Tk):
 
         headerLabel = Label(paymentHeader, pady=10, text="Payment Summary")
         headerLabel.pack(side=TOP, anchor='w')
-        headerLabel.config(font=Verdana10B)
+        headerLabel.config(font=Verdana10B, padx=35)
 
         paymentSecondHeader = Frame(top)
         paymentSecondHeader.pack(side=TOP, fill=X)
@@ -274,19 +274,26 @@ class CheckOutDialog(Tk):
                 headerLabel.config(font=Verdana10, bg="light grey")
                 usedNames.append(tempitem.get_name())
 
-        subtotalLabel = Label(top, text="subtotal: $" + str("%.2f" % subtotal))
-        subtotalLabel.pack(side=TOP, anchor='ne')
-        subtotalLabel.config(font=Verdana10)
-        deliveryLabel = Label(top, text="delivery: $" + str("%.2f" % delivery))
-        deliveryLabel.pack(side=TOP, anchor='ne')
-        deliveryLabel.config(font=Verdana10)
-        taxLabel = Label(top, text="tax: $" + str("%.2f" % tax))
-        taxLabel.pack(side=TOP, anchor='ne')
-        taxLabel.config(font=Verdana10)
-        totalLabel = Label(top, text="total: $" + str("%.2f" % total))
-        totalLabel.pack(side=TOP, anchor='ne')
-        totalLabel.config(font=Verdana10)
-        mainButton = Button(top, text='Place Order', command=self.last_click)
+        subTotalFrame = Frame(top)
+        subTotalFrame.pack(side=TOP, fill=X)
+
+        subtotalLabel = Label(subTotalFrame)
+        subtotalLabel.pack(side=TOP, anchor='nw', pady=10)
+
+
+        subtotalLabel = Label(subTotalFrame, text="Subtotal: $" + str("%.2f" % subtotal))
+        subtotalLabel.pack(side=TOP, anchor='nw')
+        subtotalLabel.config(font=Verdana10, pady=10,  padx=10)
+        deliveryLabel = Label(subTotalFrame, text="Delivery: $" + str("%.2f" % delivery))
+        deliveryLabel.pack(side=TOP, anchor='nw')
+        deliveryLabel.config(font=Verdana10, pady=10,  padx=10)
+        taxLabel = Label(subTotalFrame, text="Tax:       $" + str("%.2f" % tax))
+        taxLabel.pack(side=TOP, anchor='nw')
+        taxLabel.config(font=Verdana10, pady=10,  padx=10)
+        totalLabel = Label(subTotalFrame, text="Total:      $" + str("%.2f" % total))
+        totalLabel.pack(side=TOP, anchor='nw')
+        totalLabel.config(font=Verdana10B, pady=10,  padx=10)
+        mainButton = Button(subTotalFrame, text='Place Order', command=self.last_click)
         mainButton.pack()
 
         top.withdraw()
