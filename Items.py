@@ -127,11 +127,17 @@ class Demo(Frame):
         item2 = items("GTX 1070 ti", 449.00, 8, 'Nvidia', '1070.jpg', '8GB GDDR5(259-bit) on-board memory, PCI Express 3.0 x 16 interface, NVIDIA CUDA technology, VR-ready')
         item3 = items("Radeon RX 480", 733.00, 8, 'AMD', 'Radeon480.jpg','Dual-slot Width, 1x HDMI, 3x Display port, 256Bit, 8GB GDDR5, PCI 3.0x16, GPU Clock: 1266 MHz')
         item4 = items("AMD FirePro", 229.00, 4, 'AMD', 'FirePro.jpg','4GB SDRAM, Core Clock 950MHz, PCI Express 3.0 x 16')
-        itemName = [item1, item2, item3, item4]
+        item5 = items("GTX 1060",390.00,3,"Nvidia",'1060.jpg','1809 MHz boost Clock with 3GB GDDR58, VR-ready, Dual HDMI 2.0 ports')
+        item6 = items("Radeon RX Vega 64", 1199.99,8,'AMD','vega.jpg','8GB 2048-bit HBM2, 1x DVI-D 2x HDMI 2.0 2x DisplayPort, PCI EXpress 3.0')
+        item7 = items("MSI Radeon RX 580",766.49,8,'AMD','rx580.jpg','8GB 256-bit GDDR5 Bosst Clock 1393MHz PCI Express x16')
+        item8 = items("Gigabyte Geforce GTX 1050 Ti",239.99,4,'Nvidia','1050ti.jpg', '4GB 128-Bit GDDR5, Boost Clock 1468 MHz,1 x Dual-Link DVI-D 3 x HDMI 2.0b 1 x DisplayPort 1.4')
+        item9 = items("PNY  GTX Titan X", 1599.99,12,'Nividia','TitanX.jpg','12GB 384-Bit GDDR5, Boost Clock 1075 MHz,3072 CUDA Cores, PCI Express 3.0 x16')
+        itemName = [item1, item2, item3, item4, item5, item6, item7, item8, item9]
         r = 0
         options = []
         for selectedItem in enumerate(itemName):
             image = Image.open(selectedItem[1].get_pic())
+            image = image.resize((159,119),Image.ANTIALIAS)
             photo = ImageTk.PhotoImage(image)
             label = Label(interior, image=photo)
             label.image = photo
