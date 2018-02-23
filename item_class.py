@@ -1,11 +1,12 @@
 class items:
-    def __init__(self, name, price, MemSize, Chipset, pic):
+    def __init__(self, name, price, MemSize, Chipset, pic, description):
         self.set_name(name)
         self.set_price(price)
         self.set_MemSize(MemSize)
         self.set_Chipset(Chipset)
         self.set_pic(pic)
-
+        self.set_description(description)
+        
     def set_name(self, name):
         self.__name = name
 
@@ -35,3 +36,9 @@ class items:
 
     def get_pic(self):
         return self.__pic
+    
+    def set_description(self, description):
+        self.__description = description
+        
+    def get_description(self):
+        return self.__description
