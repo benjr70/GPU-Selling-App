@@ -3,6 +3,7 @@ from item_class import items
 from PIL import ImageTk, Image
 import tkSimpleDialog
 from cart_item_class import cartItem
+from CheckBoxes import checkbox
 
 # ********************************* keep line 2-7 the same for every frame
 subtotal = 0
@@ -11,7 +12,7 @@ itemL = Label()
 remove = Button()
 Verdana14 = ('verdana', 14, 'bold')
 Verdana10 = ('verdana', 10, 'bold')
-
+labelFont = ('verdana', 20, 'bold')
 
 
 class Demo(Frame):
@@ -61,10 +62,8 @@ class Demo(Frame):
             flag = True
             for cartItem in cartItem.cartList:
                 tempitem = cartItem.get_itemclass()
-                print tempitem.get_name()
                 if(item.get_name() == tempitem.get_name()):
                     flag = False
-                    print 'in flag = false item'
                     itemL = cartItem.get_label()
                     remove = cartItem.get_button()
                     itemL.pack_forget()
@@ -81,10 +80,8 @@ class Demo(Frame):
                     break
                 else:
                     flag = True
-                    print 'in else true'
                     
             if(flag == True):
-                print 'in if(flag == true)'
                 itemL = Label(self, text=item.get_name() + "   ( Quantity: " + quantity + " )")
                 itemL.pack(fill=X, side=TOP, anchor=N)
                 itemL.config(relief=SUNKEN, width=40, height=1, bg='beige')
@@ -105,7 +102,6 @@ class Demo(Frame):
             myDialog.wait_window(myDialog.top)
             
         def removeCart(itemname):
-            print 'int removeCart'
             global itemL
             global remove
             global cartItem
@@ -122,33 +118,41 @@ class Demo(Frame):
                     subtot = Label(self, text="subtotal: $" + str(subtotal))
                     subtot.config(relief=SUNKEN, width=40, height=1, bg='beige')
                     subtot.pack(side=BOTTOM, fill=X, anchor=N)
-                    
-                    
             itemL.pack_forget()
             remove.pack_forget()
 
+ 
         # Create a list of items
-        item1 = items("GTX 1080 ti", 549.00, 11, 'Nvidia', '1080TI.jpg')
-        item2 = items("GTX 1070 ti", 449.00, 8, 'Nvidia', '1070.jpg')
-        item3 = items("Radeon RX 480", 733.00, 8, 'AMD', 'Radeon480.jpg')
-        item4 = items("AMD FirePro", 229.00, 4, 'AMD', 'FirePro.jpg')
+        item1 = items("GTX 1080 ti", 549.00, 11, 'Nvidia', '1080TI.jpg', '11GB DDR5X VRAM, Memory Speed 11Gbps, boost clock 1582 MHz, Cuda Cores - 3584')
+        item2 = items("GTX 1070 ti", 449.00, 8, 'Nvidia', '1070.jpg', '8GB GDDR5(259-bit) on-board memory, PCI Express 3.0 x 16 interface, NVIDIA CUDA technology, VR-ready')
+        item3 = items("Radeon RX 480", 733.00, 8, 'AMD', 'Radeon480.jpg','Dual-slot Width, 1x HDMI, 3x Display port, 256Bit, 8GB GDDR5, PCI 3.0x16, GPU Clock: 1266 MHz')
+        item4 = items("AMD FirePro", 229.00, 4, 'AMD', 'FirePro.jpg','4GB SDRAM, Core Clock 950MHz, PCI Express 3.0 x 16')
         itemName = [item1, item2, item3, item4]
         r = 0
         options = []
+        #interior.configure(relief = GROOVE)
         for selectedItem in enumerate(itemName):
             image = Image.open(selectedItem[1].get_pic())
             photo = ImageTk.PhotoImage(image)
             label = Label(interior, image=photo)
             label.image = photo
             label.grid(column=0, row=r)
-
+        
+            
             itemname = Label(interior, text=selectedItem[1].get_name())
-            itemname.grid(column=2, row=r, sticky=N)
-            itemname.config(relief=SUNKEN, height=1, bg='beige')
-            itemprice = Label(interior, text=selectedItem[1].get_price())
-            itemprice.grid(column=3, row=r)
-            itemprice.config(relief=SUNKEN, height=1, bg='beige')
+            itemname.grid(column=2, row=r, sticky=NW)
+            itemname.config( font = labelFont)
 
+            description = Label(interior, text = selectedItem[1].get_description())
+            description.grid(column = 2, row = r, sticky = W)
+            description.config( height=1,)
+            
+            itemprice = Label(interior, text="$" + str(selectedItem[1].get_price()))
+            itemprice.grid(column=3, row=r)
+            itemprice.config(height=1,)
+
+
+            
             var = StringVar()
             var.set(1)
             options.append(var)
@@ -165,7 +169,6 @@ class Demo(Frame):
         cart = Label(self, text='Cart')
         cart.pack(fill=BOTH, side=TOP)
         cart.config(relief=SUNKEN, width=15, height=1, bg='green')
-        labelFont = ('verdana', 20, 'bold')
         cart.config(font=labelFont)
 
         checkout = Button(self, text='Checkout', command=displayCheckOut)
