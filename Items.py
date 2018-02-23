@@ -13,8 +13,16 @@ remove = Button()
 Verdana14B = ('verdana', 14, 'bold')
 Verdana10B = ('verdana', 10, 'bold')
 Verdana10 = ('verdana', 10)
+Verdana8 = ('verdana', 8)
 labelFont = ('verdana', 20, 'bold')
-
+def center(toplevel):
+    toplevel.update_idletasks()
+    w = toplevel.winfo_screenwidth()
+    h = toplevel.winfo_screenheight()
+    size = tuple(int(_) for _ in toplevel.geometry().split('+')[0].split('x'))
+    x = w/2 - size[0]/2
+    y = h/2 - size[1]/2
+    toplevel.geometry("%dx%d+%d+%d" % (size + (x, y)))
 class Demo(Frame):
 
     def __init__(self, parent):
@@ -100,6 +108,7 @@ class Demo(Frame):
 
         def displayCheckOut():
             myDialog = CheckOutDialog(cartItem.cartList)
+            center(myDialog)
             myDialog.wait_window(myDialog.top)
 
         def removeCart(itemname):
@@ -252,25 +261,38 @@ class CheckOutDialog(Tk):
         headerLabel.grid(column=2, row=1, padx=25)
         headerLabel.config(font=Verdana10)
 
+        usedNames = []
         for cartItem in cartList:
             body = Frame(top)
             body.pack(side=TOP, fill=X)
             body.config(bg="light grey")
 
+            used = FALSE
             tempitem = cartItem.get_itemclass()
 
-            if (cartItem.get_quantity() > 0):
-                headerLabel = Label(body, pady=10, text=tempitem.get_name())
-                headerLabel.grid(column=0, row=1, padx=35)
-                headerLabel.config(font=Verdana10, bg="light grey")
+            if cartItem.get_quantity() > 0:
+                for each in usedNames:
+                    if tempitem.get_name() == each:
+                        used = TRUE
+
+            if cartItem.get_quantity() > 0 and used == FALSE:
+                labeltext=tempitem.get_name()
+                if len(tempitem.get_name()) > 10:
+                    labeltext = '%s...' % tempitem.get_name()[:10]
+                headerLabel = Label(body, pady=10, text=labeltext)
+                headerLabel.grid(column=0, row=1, padx=(50 - len(labeltext)))
+                headerLabel.config(font=Verdana8, bg="light grey")
 
                 headerLabel = Label(body, pady=10, text=cartItem.get_quantity())
                 headerLabel.grid(column=1, row=1, padx=35)
-                headerLabel.config(font=Verdana10, bg="light grey")
+                headerLabel.grid(column=1, row=1, padx=(35 - len(str(cartItem.get_quantity()))))
+                headerLabel.config(font=Verdana8, bg="light grey")
 
                 headerLabel = Label(body, pady=10, text=tempitem.get_price())
                 headerLabel.grid(column=2, row=1, padx=50, sticky=E)
-                headerLabel.config(font=Verdana10, bg="light grey")
+                headerLabel.grid(column=2, row=1, padx=(35 - len(str(tempitem.get_price()))))
+                headerLabel.config(font=Verdana8, bg="light grey")
+                usedNames.append(tempitem.get_name())
 
         subTotalFrame = Frame(top)
         subTotalFrame.pack(side=TOP, fill=X)
@@ -296,25 +318,26 @@ class CheckOutDialog(Tk):
 
         top.withdraw()
 
-        reviewTop = self.reviewTop = Toplevel(self)
-
-        reviewTop.withdraw()
-
     def send(self):
         self.top.withdraw()
 
     def on_click(self, shippingEntries, paymentEntries):
-        for i in shippingEntries:
-            if len(i.get()) == 0:
-                showerror('error', 'Please make sure all shipping address fields are filled!')
-                return
-        for i in paymentEntries:
-            if len(i.get()) == 0:
-                showerror('error', 'Please make sure all payment fields are filled!')
-                return
+        # for i in shippingEntries:
+        #     if len(i.get()) == 0:
+        #         showerror('error', 'Please make sure all shipping address fields are filled!')
+        #         return
+        # for i in paymentEntries:
+        #     if len(i.get()) == 0:
+        #         showerror('error', 'Please make sure all payment fields are filled!')
+        #         return
+        self.withdraw()
         self.top.deiconify()
+        center(self.top)
+        
+
 
     def last_click(self):
+        showinfo('Order Placed!', 'Your order has been placed and purchased!\n Thank you!')
         self.top.destroy()
 
 # Demo().mainloop() #don't enter mainloop here that will happen when the frames are attached
