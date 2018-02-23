@@ -1,16 +1,43 @@
+#**********************************************************
+#***** Student: Kyle Paxton and Ben Rolf              *****
+#***** Class: Human Factors and User Interface        *****
+#***** Instructor: Gamradt                            *****
+#***** Assignment: 1                                  *****
+#***** Due Date: 02-23-18                             *****
+#**********************************************************
+#***** Description: This page creates a top menu of   *****
+#*****  the program. This top menu includes a file    *****
+#*****  button that cascades into our help and about  *****
+#*****  buttons, as well as contains a title for our  *****
+#*****  company's page.                               *****
+#**********************************************************
+
 from Tkinter import *
 from tkMessageBox import *
+from PIL import ImageTk, Image
 
 class Demo(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.pack()
 
+        # **********************************************************
+        # ***** Function: displayAbout                         *****
+        # **********************************************************
+        # ***** Description: This function will display the    *****
+        # *****  course information                            *****
+        # **********************************************************
         def displayAbout():
             showinfo('About', 'Student names: Kyle Paxton, Ben Rolf \n\n'+
                               'Course: SE 330\n\n' +
                               'Assignment: Assignment 1')
 
+        # **********************************************************
+        # ***** Function: displayHelp                          *****
+        # **********************************************************
+        # ***** Description: This function will display the    *****
+        # *****  steps to use this software.                   *****
+        # **********************************************************
         def displayHelp():
             showinfo('Help',  '1. Browse through the selection of GPU\'s\n\n'+
                               '2. Add items to the cart \n\n' +
@@ -31,16 +58,5 @@ class Demo(Frame):
 
         headerFrame = Frame(parent)
         headerFrame.pack(side=TOP, fill=X)
-        header = Label(headerFrame, text='GPU PLACE', font=("Helvetica", 24))
+        header = Label(headerFrame, text='THE GPU PLACE', font=("Helvetica", 24))
         header.pack(side=LEFT, padx=10)
-
-        top = Frame(headerFrame)
-        top.pack(side=TOP, fill=X, pady=10, padx=10)
-
-        def callback():
-            print e.get()
-
-        b = Button(headerFrame, text="-->", width=5, command=callback)
-        e = Entry(headerFrame, width=25)
-        b.pack(in_=top, side=RIGHT)
-        e.pack(in_=top, side=RIGHT)
